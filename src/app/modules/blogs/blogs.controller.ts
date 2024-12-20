@@ -17,7 +17,7 @@ const createBlog = catchAsync(async(req,res)=>{
 
 const deleteBlog = catchAsync (async (req,res) =>{
   const {id} = req.params;
-  const result = await Blog.findByIdAndDelete(id)
+   await Blog.findByIdAndDelete(id)
    res.status(200).json({
     message: "Blog deleted successfully",
       success: true,
@@ -25,6 +25,16 @@ const deleteBlog = catchAsync (async (req,res) =>{
    })
 })
 
+const updateBlog = catchAsync(async(req,res)=>{
+  const {id} = req.params;
+  const results = await BlogService.updateBlog(id,req.body)
+  const result = {
+    title:results?.title,
+    content:results?.content
+  }
+  res.send(result)
+})
+
 export const BlogController = {
-  createBlog,deleteBlog
+  createBlog,deleteBlog,updateBlog
 }

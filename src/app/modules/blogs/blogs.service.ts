@@ -9,7 +9,12 @@ const deleteBlog = async (id:string)=>{
   const result = await Blog.findByIdAndDelete(id)
   return result
 }
+const updateBlog = async (id:string,payload:TBlog)=>{
+  const result = await Blog.findByIdAndUpdate(id,payload, {new:true})
+  return result
+}
+
 
 export const BlogService = {
-  createBlogIntoDB,deleteBlog
+  createBlogIntoDB,deleteBlog,updateBlog
 }
