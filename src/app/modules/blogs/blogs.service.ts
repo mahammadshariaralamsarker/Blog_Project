@@ -14,7 +14,7 @@ const updateBlog = async (id:string,payload:TBlog)=>{
   return result
 }
 const getAllBlog = async () =>{
-  const result = await Blog.find();
+  const result = await Blog.find().populate('author');
   return result
 }
 
