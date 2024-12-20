@@ -13,8 +13,11 @@ const updateBlog = async (id:string,payload:TBlog)=>{
   const result = await Blog.findByIdAndUpdate(id,payload, {new:true})
   return result
 }
-
+const getAllBlog = async () =>{
+  const result = await Blog.find();
+  return result
+}
 
 export const BlogService = {
-  createBlogIntoDB,deleteBlog,updateBlog
+  createBlogIntoDB,deleteBlog,updateBlog,getAllBlog
 }

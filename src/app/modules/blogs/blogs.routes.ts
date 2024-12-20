@@ -3,6 +3,8 @@ import { BlogController } from "./blogs.controller";
 
 const router = Router();
 router.post('/',BlogController.createBlog)
+router.get('/',BlogController.getAllBlog)
 router.delete('/:id',BlogController.deleteBlog)
 router.patch('/:id',BlogController.updateBlog)
+
 export const BlogRoutes = router
