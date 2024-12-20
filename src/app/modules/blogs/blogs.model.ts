@@ -22,5 +22,5 @@ const blogSchema = new Schema <TBlog>(
     versionKey:false
   }
 )
-
+ 
 export const Blog = model<TBlog>('Blog', blogSchema)
