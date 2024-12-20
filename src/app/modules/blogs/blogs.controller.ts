@@ -9,7 +9,7 @@ const createBlog = catchAsync(async(req,res)=>{
   sendResponse(res,{
     statusCode: httpstatus.OK,
     success:true,
-    message:"Blogs Created Successfully",
+    message:"Blog created successfully",
     data:result
   })
 })
