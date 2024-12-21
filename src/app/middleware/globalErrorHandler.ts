@@ -48,13 +48,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
     ];
   } else if (err instanceof Error) {
     message = err?.message;
-  }
-
-  /* else if(err?.code ===11000){
-    const simplifiedError = handleDuplicateID(err)
-  } */
-
-  // ultimate Return
+  } 
   return res.status(statusCode).json({
     status: false,
     statusCode:statusCode,
