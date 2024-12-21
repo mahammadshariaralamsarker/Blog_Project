@@ -4,14 +4,14 @@ import { TErrorSources, TGenericErrorResponse } from '../interface/error';
 export const handleZodError = (err: ZodError): TGenericErrorResponse => {
   const errorSources: TErrorSources = err.issues.map((issue: ZodIssue) => {
     return {
-      statusCode,
+      // statusCode,
       path: issue?.path[issue.path.length - 1],
       message: issue.message,
     };
   });
-  const statusCode = 401;
+  const statusCode = 400;
   return {
-    statusCode,
+     statusCode,
     message: 'Validation Error',
     errorSources,
   };

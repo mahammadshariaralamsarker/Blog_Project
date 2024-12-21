@@ -7,6 +7,7 @@ import { TErrorSources } from '../../interface/error';
 import { handleZodError } from '../../error/handleZodError';
 import { handleCastValidationError } from '../../error/handleCastError';
 import AppError from '../../error/app.error';
+import config from '../../config';
  
 // import { handleDuplicateID } from '../Errors/handleDuplicateID';
 
@@ -56,9 +57,10 @@ export const globalErrorHandler: ErrorRequestHandler = (
   // ultimate Return
   return res.status(statusCode).json({
     status: false,
+    statusCode:statusCode,
     message,
     errorSources,
-    // stack:config.Node_Env ==='development'?err?.stack:null,
-    err,
+     stack: "error stack"  
+   
   });
 };
