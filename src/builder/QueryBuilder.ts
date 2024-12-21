@@ -6,49 +6,55 @@ class QueryBuilder<T> {
 
   constructor(modelQuery: Query<T[], T>, query: Record<string, unknown>) {
     this.modelQuery = modelQuery;
-    this.query = query; 
+    this.query = query;
   }
+
+  // Search functionality
   search(searchableFields: string[]) {
-    const searchTerm = this?.query.search; 
+    const searchTerm = this?.query?.search as string;
     if (searchTerm) {
       this.modelQuery = this.modelQuery.find({
         $or: searchableFields.map(
           (field) =>
             ({
               [field]: { $regex: searchTerm, $options: 'i' },
-            }) as FilterQuery<T>,
+            }) as FilterQuery<T>
         ),
       });
     }
     return this;
   }
-    filter() {
+
+  // Filters out special fields and applies remaining filters
+  filter() {
     const queryObj = { ...this.query };
-    const excludeFields = ['search', 'sort', 'limit', 'page', 'fields'];
+    const excludeFields = ['search', 'sortBy', 'sortOrder', 'limit', 'page', 'fields'];
     excludeFields.forEach((el) => delete queryObj[el]);
+
+    // Apply filtering if specific keys are provided
+    if (this.query.filter) {
+      queryObj.authorId = this.query.filter;
+    }
+
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
     return this;
-  }  
+  }
+
+  // Sorting functionality with sortBy and sortOrder
   sort() {
-    console.log(this.query);
-    // console.log(this?.query?.sort);
-    const sort =
-      (this?.query?.fields as string)?.split(',')?.join(' ') || '-createdAt';
-      console.log(sort);
-      this.modelQuery = this.modelQuery.sort(sort as string); 
+    const sortBy = (this?.query?.sortBy as string) || 'createdAt';
+    const sortOrder = (this?.query?.sortOrder as string) === 'desc' ? '-' : '';
+    const sort = `${sortOrder}${sortBy}`; // e.g., '-createdAt'
+    this.modelQuery = this.modelQuery.sort(sort);
     return this;
   }
-  paginate() {
-    const page = Number(this?.query?.page) || 1;
-    const limit = Number(this?.query?.limit) || 5;
-    const skip = (page - 1) * limit;
-    this.modelQuery = this.modelQuery.skip(skip).limit(limit);
-    return this;
-  }
+
+  // Select specific fields
   fields() {
     const fields = (this?.query?.fields as string)?.split(',')?.join(' ') || '';
     this.modelQuery = this?.modelQuery?.select(fields);
     return this;
   }
 }
+
 export default QueryBuilder;
