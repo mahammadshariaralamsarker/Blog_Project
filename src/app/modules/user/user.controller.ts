@@ -3,7 +3,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { UserService } from "./user.service";
 import httpstatus from 'http-status-codes'
 
-const createUsers = catchAsync(async(req,res)=>{
+const createUsers = catchAsync(async(req,res)=>{  console.log(req.body);
   const result = await UserService.createUserIntoDB(req.body)
    
     sendResponse(res, {
