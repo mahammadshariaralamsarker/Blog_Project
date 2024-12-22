@@ -1,9 +1,4 @@
 import express from 'express';
-import { UserRoutes } from '../modules/user/user.routes';
-import { BlogRoutes } from '../modules/blogs/blogs.routes';
-import { RegisterRoutes } from '../modules/Register/register.routes';
-import { AuthRoute } from '../modules/auth/auth.routes';
-import { AdminRoutes } from '../modules/admin/admin.routes';
  
 
 const router = express.Router();
