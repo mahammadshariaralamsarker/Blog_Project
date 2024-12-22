@@ -1,44 +1,29 @@
-import { NextFunction, Request, Response } from 'express'; 
-import httpstatus from 'http-status-codes';
-import jwt, { JwtPayload } from 'jsonwebtoken'; 
-import { catchAsync } from '../utils/catchAsync';
-import AppError from '../../error/app.error';
-import config from '../../config';
+import jwt, { JwtPayload } from "jsonwebtoken";
+import httpStatus from "http-status-codes";   
+import config from "../../config";
+import { catchAsync } from "../utils/catchAsync";
+import AppError from "../../error/app.error";
 
-interface CustomRequest extends Request {
-  user: JwtPayload;
-}
+const JWT_SECRET = config.jwt_access_secret as string;
 
-export const auth = (...requiredRoles: TUserRole[]) => {
-  return catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const token = req.headers.authorization;
-      if (!token) {
-        throw new AppError(httpstatus.UNAUTHORIZED, 'You are not authorized!');
-      }
-      // check if the token is valid and verify the token
-      jwt.verify(
-        token,
-        config.jwt_access_secret as string,
-        function (err, decoded) {
-          if (err) {
-            throw new AppError(
-              httpstatus.UNAUTHORIZED,
-              'You are not Authorised!',
-            );
-          }
-          const role = (decoded as JwtPayload).role
-          if(requiredRoles && !requiredRoles.includes(role) ){
-            throw new AppError(
-              httpstatus.UNAUTHORIZED,
-              'You are not Authorised!',
-            );
-          }
-          req.user = decoded as JwtPayload;
-          next();
-        },
-      );
-
-    },
-  );
-};
+const authUser = catchAsync(async (req, res, next) => {
+    const authHeader = req.headers.authorization as string;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        throw new AppError(httpStatus.UNAUTHORIZED, "Access denied. No token provided or invalid format.");
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    req.user = decoded
+    next()
+})
+const onlyAdmin = catchAsync(async (req, res, next) => {
+    const user = req.user?._doc;
+    if (!user || !user.role) {
+        throw new Error("Access denied. No token provided or invalid format.");
+    }
+    if (user.role !== "admin") {
+        throw new Error("Access denied only admin");
+    }
+    next();
+})
+export const auth = { authUser, onlyAdmin };

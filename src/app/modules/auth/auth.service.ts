@@ -1,37 +1,45 @@
+import jwt from "jsonwebtoken" 
+import { TUser } from "../user/user.interface" 
+import bcrypt from 'bcrypt'
+import httpStatus from 'http-status-codes' 
+import { User } from "../user/user.model"
+import AppError from "../../../error/app.error"
+import config from "../../../config"
+import { TLogin } from "./auth.interface"
+const JWT_SECRET = config.jwt_access_secret as string
+
+const createUserIntoDB = async (payload: TUser) => {
+    const result = new User(payload)
+    if (!result) throw new AppError(httpStatus.NOT_FOUND, "Validation error")
+    await result.save()
+    return result;
+}
+const loginUserIntoDB = async (payload: TLogin) => {
+    const { email, password } = payload;
+    if (!email || !password) throw new AppError(httpStatus.NOT_FOUND, "Invalid credentials!")
+    
+    const user = await User.findOne({ email: email }).select('+password')
+    if (!user) throw new AppError(httpStatus.NOT_FOUND, `Invalid ${email} no record create !`)
+    const isDeleted = user?.isBlocked;
+
+    if (isDeleted) {
+        throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
+    }
+
+    // Compare provided password with the hashed password
+    const isPasswordValid = await bcrypt.compare(password, user?.password);
+    if (!isPasswordValid) {
+        throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid password!');
+    }
+    const token = jwt.sign(
+        {...user},
+        JWT_SECRET,
+        { expiresIn: "1h" }
+    );
+    return token;
+}
 
 
-import config from '../../../config';
-import AppError from '../../../error/app.error';
-import { TRegister } from '../Register/register.interface';
-import httpstatus from 'http-status-codes';
-import  jwt  from 'jsonwebtoken';
-import { User } from '../user/user.model';
-
-
-
-
-const loginUser = async (payload:TRegister) => {
-   
-  const user = await User.findOne({email:payload.email})
-   if (!user) {
-    throw new AppError(httpstatus.NOT_FOUND, 'This User is not Found!');
-  }
-  if (!(await User.isPasswordMatched(payload?.password, user.password))) 
-    throw new AppError( httpstatus.FORBIDDEN, 'Password donnot matched Blocked!', );
-  const jwtPayload = {
-    email:user.email,
-    userPassword:user.password ,
-    role:user.role
-  }
-  
-  const token = jwt.sign(jwtPayload,config.jwt_access_secret as string,{
-    expiresIn:"10d"
-  })
-
-  return {
-  token
-  }; 
-};
 export const AuthService = {
-  loginUser,
-};
+    createUserIntoDB, loginUserIntoDB
+}

@@ -1,20 +1,44 @@
-// import { catchAsync } from "../../utils/CatchAsync";
-import { sendResponse } from "../../utils/sendResponse";
-import httpstatus from 'http-status-codes'
-import { AuthService } from "./auth.service";
+import AppError from "../../../error/app.error";
 import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
+import { UserService } from "../user/user.service";
+import { AuthService } from "./auth.service"; 
+import httpStatus from 'http-status-codes' 
 
+const userCreaetAccount = catchAsync(async (req, res) => {
+    const data = req.body;
+    if (!data) throw new AppError(httpStatus.NOT_FOUND, "Validation error")
+    const result = await AuthService.createUserIntoDB(data)
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        success: true,
+        message: "User registered successfully",
+        data: result
+    })
 
-const loginUser = catchAsync(async(req,res) =>{
-  const result = await AuthService.loginUser(req.body)
-  sendResponse(res, {
-    statusCode: httpstatus.OK,
-    success: true,
-    message: 'Login  successfully',
-    data: result,
-  });
 })
 
-export const AuthController = {
-  loginUser
-}
+const userLogin = catchAsync(async (req, res) => {
+    const data = req.body;
+    if (!data) throw new AppError(httpStatus.NOT_FOUND,"Invalid credentials")
+    const result = await AuthService.loginUserIntoDB(data)
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        success: true,
+        message: "Login successful",
+        data: { token: result }
+    })
+})
+const userBlockUpdate = catchAsync(async (req, res) => {
+    const { userId } = req.params;
+    if (!userId) throw new AppError(httpStatus.NOT_FOUND, "Invalid Body Information")
+    const result = await UserService.blockUserIntoDB(userId)
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        success: true,
+        message: "User blocked successfully",
+        data: result
+    })
+
+})
+export const authController = { userCreaetAccount, userLogin,userBlockUpdate }

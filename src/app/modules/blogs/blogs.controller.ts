@@ -45,7 +45,19 @@ const getAllBlog = catchAsync(async(req,res)=>{
   })
 
 })
+const blogDelete = catchAsync(async (req, res) => {
+  const { Id } = req.params;
+  const user = req.user
+  if (!Id || !user) throw new Error("Invalid Body Information")
+  const result = await BlogService.deleteBlogIntoDB(Id, user)
+  sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Blog deleted successfully",
+      data: result
+  })
 
+})
 export const BlogController = {
-  createBlog,deleteBlog,updateBlog,getAllBlog
+  blogDelete,createBlog,deleteBlog,updateBlog,getAllBlog
 }
