@@ -1,9 +1,10 @@
-import AppError from "../../error/AppError"
-import httpStatus from 'http-status'
+ 
+import httpStatus from 'http-status-codes'
 import { TBlog } from "./blog.interface"
 import { BlogModel } from "./blog.model"
 import { JwtPayload } from "jsonwebtoken"
 import QueryBuilder from "../../builder/QueryBuilder"
+import AppError from '../../../error/app.error'
 
 const createBlogIntoDB = async (payload: TBlog, user: JwtPayload) => {
     const userData = user._doc;

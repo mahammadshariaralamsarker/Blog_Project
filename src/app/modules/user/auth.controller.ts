@@ -1,8 +1,8 @@
-import httpStatus from "http-status";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
-import { UserService } from "./user.service";
-import AppError from "../../error/AppError";
+import httpStatus from "http-status-codes"; 
+import { UserService } from "./user.service"; 
+import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
+import AppError from "../../../error/app.error";
 ;
 
 
