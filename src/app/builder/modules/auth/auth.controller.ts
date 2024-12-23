@@ -1,9 +1,8 @@
+import AppError from "../../../../error/app.error";
+import { catchAsync } from "../../../utils/catchAsync";
+import { sendResponse } from "../../../utils/sendResponse";
 import { AuthService } from "./auth.service";
-import sendResponse from "../../utils/sendResponse";
-import catchAsync from "../../utils/catchAsync";
-import httpStatus from 'http-status'
-import AppError from "../../error/AppError";
-
+import httpStatus from "http-status-codes"
 const userCreaetAccount = catchAsync(async (req, res) => {
     const data = req.body;
     if (!data) throw new AppError(httpStatus.NOT_FOUND, "Validation error")
@@ -19,7 +18,7 @@ const userCreaetAccount = catchAsync(async (req, res) => {
 
 const userLogin = catchAsync(async (req, res) => {
     const data = req.body;
-    if (!data) throw new AppError(httpStatus.FOUND,"Invalid credentials")
+    if (!data) throw new AppError(httpStatus.NOT_FOUND,"Invalid credentials")
     const result = await AuthService.loginUserIntoDB(data)
     sendResponse(res, {
         statusCode: httpStatus.CREATED,

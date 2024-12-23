@@ -1,7 +1,8 @@
-import AppError from "../../error/AppError"
-import httpStatus from 'http-status'
+
+import httpStatus from 'http-status-codes'
 import { TUser } from "./user.interface"
 import { UserModel } from "./user.model";
+import AppError from '../../../../error/app.error';
 
 
 const updateUserIntoDB = async (payload: Partial<TUser>, Id: string) => {

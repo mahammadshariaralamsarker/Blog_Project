@@ -1,22 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 
-import { ErrorRequestHandler } from 'express';
+import { ErrorRequestHandler, NextFunction } from 'express';
 import { ZodError } from 'zod';  
 import { TErrorSources } from '../../interface/error';
 import { handleZodError } from '../../error/handleZodError';
 import { handleCastValidationError } from '../../error/handleCastError';
-import AppError from '../../error/app.error';
-import config from '../../config';
- 
-// import { handleDuplicateID } from '../Errors/handleDuplicateID';
+import AppError from '../../error/app.error';  
 
 export const globalErrorHandler: ErrorRequestHandler = (
   err,
-  req,
-  res,
-  next,
-) => {
+req,res,next
+)=> {
   // setting getting values
   let statusCode = 500;
   let message = 'Something went wrong!';
@@ -49,7 +44,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
   } else if (err instanceof Error) {
     message = err?.message;
   } 
-  return res.status(statusCode).json({
+   res.status(statusCode).json({
     status: false,
     statusCode:statusCode,
     message,

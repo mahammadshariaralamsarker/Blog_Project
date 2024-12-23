@@ -1,12 +1,12 @@
-import jwt from "jsonwebtoken"
-import AppError from "../../error/AppError"
+import jwt from "jsonwebtoken" 
 import { TUser } from "../user/user.interface"
 import { UserModel } from "../user/user.model"
 import { TLogin } from "./auth.interface"
 import bcrypt from 'bcrypt'
-import httpStatus from 'http-status'
-import config from "../../config"
-const JWT_SECRET = config.jwtSecret as string
+import httpStatus from 'http-status-codes' 
+import AppError from "../../../../error/app.error"
+import config from "../../../../config"
+const JWT_SECRET = config.jwt_access_secret as string
 
 const createUserIntoDB = async (payload: TUser) => {
     const result = new UserModel(payload)
