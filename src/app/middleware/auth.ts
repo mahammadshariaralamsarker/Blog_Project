@@ -8,10 +8,10 @@ const JWT_SECRET = config.jwt_access_secret as string;
 
 const authUser = catchAsync(async (req, res, next) => {
     const authHeader = req.headers.authorization as string;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
         throw new AppError(httpStatus.UNAUTHORIZED, "Access denied. No token provided or invalid format.");
     }
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.split(" ")[1]; 
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     req.user = decoded
     next()
